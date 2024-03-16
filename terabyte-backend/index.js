@@ -3,16 +3,22 @@ const express = require('express');
 const mongoose = require('mongoose');
 const FormDataModel = require ('./models/FormData');
 
-
 const app = express();
 app.use(express.json());
 app.use(cors());
 
-mongoose.connect('mongodb://127.0.0.1:27017/practice_mern');
+// Replace the connection string below with your MongoDB Atlas connection string
+const mongoDBAtlasConnectionString = 'mongodb+srv://sahilgupta1107:NYiuWqn5KCfsVEDr@cluster0.fybfqzl.mongodb.net/practice_mern?retryWrites=true&w=majority';
+
+mongoose.connect(mongoDBAtlasConnectionString, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+})
+.then(() => console.log('Connected to MongoDB Atlas'))
+.catch(err => console.error('Error connecting to MongoDB Atlas:', err));
 
 app.post('/register', (req, res)=>{
     // To post / insert data into database
-
     const {email, password} = req.body;
     FormDataModel.findOne({email: email})
     .then(user => {
@@ -25,7 +31,6 @@ app.post('/register', (req, res)=>{
             .catch(err => res.json(err))
         }
     })
-    
 })
 
 app.post('/login', (req, res)=>{
@@ -49,7 +54,7 @@ app.post('/login', (req, res)=>{
     })
 })
 
-app.listen(3001, () => {
-    console.log("Server listining on http://127.0.0.1:3001");
-
+const PORT = process.env.PORT || 3001;
+app.listen(PORT, () => {
+    console.log(`Server listening on http://127.0.0.1:${PORT}`);
 });
